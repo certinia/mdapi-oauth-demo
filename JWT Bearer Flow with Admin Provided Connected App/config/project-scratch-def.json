@@ -1,0 +1,13 @@
+{
+    "orgName": "OAuth JWT Flow Demo Code",
+    "edition": "Developer",
+    "features": ["DebugApex"],
+    "settings": {
+        "lightningExperienceSettings": {
+            "enableS1DesktopEnabled": true
+        },
+        "languageSettings": {
+            "enableTranslationWorkbench": true
+        }
+    }
+}

@@ -1,0 +1,27 @@
+<!-- Copyright (c) 2023 FinancialForce.com, inc. All rights reserved. -->
+<template>
+    <template if:true={isProcessing}>
+        <lightning-spinner class="ff-main-body-blocked" alternative-text="Loading" size="large"></lightning-spinner>
+    </template>
+    <lightning-card title="MDAPI Demo Client Settings">
+        <lightning-button-group slot="actions">
+            <lightning-button class="ff-save" label={labels.settingsSave} onclick={handleSave} variant="brand"></lightning-button>
+        </lightning-button-group>
+        <div class="slds-m-around_small">
+            <lightning-input
+                data-field="allowRefreshTokens"
+                type="checkbox"
+                onchange={handleFieldChange}
+                label="Use Refresh Tokens to allow access at any time"
+                checked={state.config.allowRefreshTokens}
+            ></lightning-input>
+            <lightning-input
+                data-field="useLargeTokenStore"
+                type="checkbox"
+                onchange={handleFieldChange}
+                label="Use the SObject based Large Token Store instead of the Custom Setting Token Store"
+                checked={state.config.useLargeTokenStore}
+            ></lightning-input>
+        </div>
+    </lightning-card>
+</template>

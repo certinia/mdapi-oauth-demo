@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <masterLabel>Token Cache Event</masterLabel>
+    <isExposed>false</isExposed>
+    <description>Communicate changes to the token cache</description>
+    <lightningMessageFields>
+        <fieldName>event</fieldName>
+        <description>Nature of the event</description>
+    </lightningMessageFields>
+</LightningMessageChannel>

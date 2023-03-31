@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>API</label>
+    <protected>true</protected>
+    <values>
+        <field>Callback__c</field>
+        <value xsi:type="xsd:string">__OAUTH_CALLBACK__</value>
+    </values>
+    <values>
+        <field>ClientId__c</field>
+        <value xsi:type="xsd:string">__OAUTH_KEY__</value>
+    </values>
+    <values>
+        <field>ClientSecret__c</field>
+        <value xsi:type="xsd:string">__OAUTH_SECRET__</value>
+    </values>
+    <values>
+        <field>Scopes__c</field>
+        <value xsi:type="xsd:string">api</value>
+    </values>
+</CustomMetadata>

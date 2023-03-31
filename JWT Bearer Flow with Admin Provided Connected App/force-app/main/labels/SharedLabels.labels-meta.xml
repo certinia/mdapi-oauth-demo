@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+	<labels>
+		<fullName>SettingsSaveOk</fullName>
+		<categories>DemoAppSettings</categories>
+		<language>en_US</language>
+		<protected>true</protected>
+		<shortDescription>Save button OK toast</shortDescription>
+		<value>Settings saved</value>
+	</labels>
+	<labels>
+		<fullName>SettingsSave</fullName>
+		<categories>DemoAppSettings</categories>
+		<language>en_US</language>
+		<protected>true</protected>
+		<shortDescription>Save button</shortDescription>
+		<value>Save Settings</value>
+	</labels>
+	<labels>
+		<fullName>SettingsTestOk</fullName>
+		<categories>DemoAppSettings</categories>
+		<language>en_US</language>
+		<protected>true</protected>
+		<shortDescription>Test Connection Button OK toast</shortDescription>
+		<value>Test successful</value>
+	</labels>
+	<labels>
+		<fullName>SettingsTest</fullName>
+		<categories>DemoAppSettings</categories>
+		<language>en_US</language>
+		<protected>true</protected>
+		<shortDescription>Test Connection Button</shortDescription>
+		<value>Test Unsaved Settings</value>
+	</labels>
+	<labels>
+		<fullName>ObjectInfoNotFound</fullName>
+		<categories>DemoApp</categories>
+		<language>en_US</language>
+		<protected>true</protected>
+		<shortDescription>It was not possible to find the test object information</shortDescription>
+		<value>The object {0} could not be found.</value>
+	</labels>
+	<labels>
+		<fullName>MdApiClientNotConfigured</fullName>
+		<categories>MdApiClient</categories>
+		<language>en_US</language>
+		<protected>true</protected>
+		<shortDescription>Placeholder label for future code</shortDescription>
+		<value>The Metadata API Client is not configured.</value>
+	</labels>
+	<labels>
+		<fullName>MdApiClientDataNotFound</fullName>
+		<categories>MdApiClient</categories>
+		<language>en_US</language>
+		<protected>true</protected>
+		<shortDescription>Placeholder label for future code</shortDescription>
+		<value>The Metadata API Client reported &quot;Data Not Found&quot;. Check that the Named Certificate exists.</value>
+	</labels>
+	<labels>
+		<fullName>MdApiClientInvalidGrant</fullName>
+		<categories>MdApiClient</categories>
+		<language>en_US</language>
+		<protected>true</protected>
+		<shortDescription>Placeholder label for future code</shortDescription>
+		<value>Failed to request an access token for Salesforce API. The login server responded "{0}". Check that the Connected App is set to use a digital certificate and Admin Must Authorize Users.</value>
+	</labels>
+	<labels>
+		<fullName>MdApiClientInvalidClientId</fullName>
+		<categories>MdApiClient</categories>
+		<language>en_US</language>
+		<protected>true</protected>
+		<shortDescription>Placeholder label for future code</shortDescription>
+		<value>Failed to request an access token for Salesforce API. The login server responded "{0}". Check the consumer key in the Metadata API Client Settings</value>
+	</labels>
+	<labels>
+		<fullName>MdApiClientInvalidClient</fullName>
+		<categories>MdApiClient</categories>
+		<language>en_US</language>
+		<protected>true</protected>
+		<shortDescription>Placeholder label for future code</shortDescription>
+		<value>Failed to request an access token for Salesforce API. The login server responded "{0}". Check the certificate in the Metadata API Client Settings</value>
+	</labels>
+	<labels>
+		<fullName>MdApiClientInvalidAppAccess</fullName>
+		<categories>MdApiClient</categories>
+		<language>en_US</language>
+		<protected>true</protected>
+		<shortDescription>Placeholder label for future code</shortDescription>
+		<value>Failed to request an access token for Salesforce API. The login server responded "{0}". Check that you have permission to access to Connected App</value>
+	</labels>
+	<labels>
+		<fullName>MdApiClientInvalidRequest</fullName>
+		<categories>MdApiClient</categories>
+		<language>en_US</language>
+		<protected>true</protected>
+		<shortDescription>Placeholder label for future code</shortDescription>
+		<value>Failed to request an access token for Salesforce API. The login server responded "{0}"</value>
+	</labels>
+	<labels>
+		<fullName>MdApiClientUnrecognisedErrorCode</fullName>
+		<categories>MdApiClient</categories>
+		<language>en_US</language>
+		<protected>true</protected>
+		<shortDescription>Placeholder label for future code</shortDescription>
+		<value>Failed to request an access token for Salesforce API. The login server responded {0}: {1}</value>
+	</labels>
+	<labels>
+		<fullName>MdApiClientInvalidResponse</fullName>
+		<categories>MdApiClient</categories>
+		<language>en_US</language>
+		<protected>true</protected>
+		<shortDescription>Placeholder label for future code</shortDescription>
+		<value>Failed to request an access token for Salesforce API. The login server responded "{0}"</value>
+	</labels>
+	<labels>
+		<fullName>MdApiClientMissingScope</fullName>
+		<categories>MdApiClient</categories>
+		<language>en_US</language>
+		<protected>true</protected>
+		<shortDescription>Placeholder label for future code</shortDescription>
+		<value>The Metadata API Client Connected App does not have the required scope: {0}. Add this scope to the Connected App.</value>
+	</labels>
+	<labels>
+		<fullName>MdApiClientMissingScopes</fullName>
+		<categories>MdApiClient</categories>
+		<language>en_US</language>
+		<protected>true</protected>
+		<shortDescription>Placeholder label for future code</shortDescription>
+		<value>The Metadata API Client Connected App does not have the required scopes: {0}. Add these scopes to the Connected App.</value>
+	</labels>
+</CustomLabels>

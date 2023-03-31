@@ -1,0 +1,21 @@
+.ff-logItem {
+    list-style-type: circle;
+    width: 100%;
+    margin: 1px;
+    padding: 2px;
+}
+
+.ff-logItem_error {
+    color: red;
+}
+
+.ff-logItem_success {
+    color: green;
+}
+
+.ff-logItem_debug {
+    font-style: italic;
+    color: darkgray;
+    max-height: 3em;
+    overflow-y: auto;
+}

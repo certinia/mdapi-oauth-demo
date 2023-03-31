@@ -1,0 +1,23 @@
+<!-- Copyright (c) 2023 FinancialForce.com, inc. All rights reserved. -->
+<template>
+    <template if:true={isProcessing}>
+        <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+    </template>
+    <lightning-card title="Metadata API Call Demo">
+        <lightning-button-group slot="actions">
+            <lightning-button label="Clear Log" onclick={handleClearLog}></lightning-button>
+            <lightning-button
+                label="Perform Metadata API Query"
+                onclick={handleRunDemo}
+                variant="brand"
+            ></lightning-button>
+        </lightning-button-group>
+        <lightning-card title="Log">
+            <ul>
+                <template for:each={state.logs} for:item="log">
+                    <li class={log.class} key={log.key}>{log.message}</li>
+                </template>
+            </ul>
+        </lightning-card>
+    </lightning-card>
+</template>

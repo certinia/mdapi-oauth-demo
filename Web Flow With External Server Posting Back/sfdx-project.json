@@ -1,0 +1,33 @@
+{
+    "packageDirectories": [
+        {
+            "path": "force-app/main",
+            "default": true
+        }
+    ],
+    "replacements": [
+        {
+            "filename": "force-app/main/customMetadata/WebFlowClient.API.md-meta.xml",
+            "stringToReplace": "__OAUTH_KEY__",
+            "replaceWithEnv": "OAUTH_KEY"
+        },
+        {
+            "filename": "force-app/main/customMetadata/WebFlowClient.API.md-meta.xml",
+            "stringToReplace": "__OAUTH_CALLBACK__",
+            "replaceWithEnv": "OAUTH_CALLBACK"
+        },
+        {
+            "filename": "force-app/main/customMetadata/WebFlowClient.API.md-meta.xml",
+            "stringToReplace": "__OAUTH_SECRET__",
+            "replaceWithEnv": "OAUTH_SECRET"
+        },
+        {
+            "filename": "force-app/main/connectedApps/Web_Flow_Demo.connectedApp-meta.xml",
+            "stringToReplace": "__OAUTH_CALLBACK__",
+            "replaceWithEnv": "OAUTH_CALLBACK"
+        }
+    ],
+    "namespace": "",
+    "sfdcLoginUrl": "https://login.salesforce.com",
+    "sourceApiVersion": "56.0"
+}
