@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2023 FinancialForce.com, inc. All rights reserved.
+ * Based on LWC Recipes
+ * See https://github.com/trailheadapps/lwc-recipes/blob/main/force-app/main/default/lwc/ldsUtils/ldsUtils.js
  */
 
 /**
