@@ -78,9 +78,8 @@ public inherited sharing class MdApiGetTokenCommand implements Callable {
         final String name = 'API';
         WebFlowClient__mdt[] clientInfos = [SELECT DeveloperName, Scopes__c, Callback__c, ClientId__c, ClientSecret__c FROM WebFlowClient__mdt WHERE DeveloperName = :name]; //NOPMD
         if(clientInfos.size() != 1) {
-            // TODO: A better error
-            throw AuthDemoApplicationException.builder(AuthDemoApplicationException.MDAPI_CLIENT_ERROR_CODE_MISCONFIGURED, Label.MdApiClientNotConfigured)
-            .withFormatArg('<metadata>:' + name)
+            throw AuthDemoApplicationException.builder(AuthDemoApplicationException.MDAPI_CLIENT_ERROR_CODE_MISCONFIGURED, Label.MdApiClientMissingMetadata)
+            .withFormatArg(name)
             .build();
         } 
         return clientInfos[0];

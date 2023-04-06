@@ -45,7 +45,7 @@
 		<categories>MdApiClient</categories>
 		<language>en_US</language>
 		<protected>true</protected>
-		<shortDescription>Placeholder label for future code</shortDescription>
+		<shortDescription>When a request is made to fetch a token, but no configuration has been set</shortDescription>
 		<value>The Metadata API Client is not configured.</value>
 	</labels>
 	<labels>
@@ -53,7 +53,7 @@
 		<categories>MdApiClient</categories>
 		<language>en_US</language>
 		<protected>true</protected>
-		<shortDescription>Placeholder label for future code</shortDescription>
+		<shortDescription>Response to a Data Not Found exception from the Apex JWT support code</shortDescription>
 		<value>The Metadata API Client reported &quot;Data Not Found&quot;. Check that the Named Certificate exists.</value>
 	</labels>
 	<labels>
@@ -61,7 +61,7 @@
 		<categories>MdApiClient</categories>
 		<language>en_US</language>
 		<protected>true</protected>
-		<shortDescription>Placeholder label for future code</shortDescription>
+		<shortDescription>Response to invalid_grant message from the authentication server</shortDescription>
 		<value>Failed to request an access token for Salesforce API. The login server responded "{0}". Check that the Connected App is set to use a digital certificate and Admin Must Authorize Users.</value>
 	</labels>
 	<labels>
@@ -69,7 +69,7 @@
 		<categories>MdApiClient</categories>
 		<language>en_US</language>
 		<protected>true</protected>
-		<shortDescription>Placeholder label for future code</shortDescription>
+		<shortDescription>Response to invalid client ID message from the authentication server</shortDescription>
 		<value>Failed to request an access token for Salesforce API. The login server responded "{0}". Check the consumer key in the Metadata API Client Settings</value>
 	</labels>
 	<labels>
@@ -77,7 +77,7 @@
 		<categories>MdApiClient</categories>
 		<language>en_US</language>
 		<protected>true</protected>
-		<shortDescription>Placeholder label for future code</shortDescription>
+		<shortDescription>Response to invalid client message from the authentication server</shortDescription>
 		<value>Failed to request an access token for Salesforce API. The login server responded "{0}". Check the certificate in the Metadata API Client Settings</value>
 	</labels>
 	<labels>
@@ -85,7 +85,7 @@
 		<categories>MdApiClient</categories>
 		<language>en_US</language>
 		<protected>true</protected>
-		<shortDescription>Placeholder label for future code</shortDescription>
+		<shortDescription>Response to Invalid App Access message from the authentication server</shortDescription>
 		<value>Failed to request an access token for Salesforce API. The login server responded "{0}". Check that you have permission to access to Connected App</value>
 	</labels>
 	<labels>
@@ -93,7 +93,7 @@
 		<categories>MdApiClient</categories>
 		<language>en_US</language>
 		<protected>true</protected>
-		<shortDescription>Placeholder label for future code</shortDescription>
+		<shortDescription>Response to Invalid Request message from the authentication server</shortDescription>
 		<value>Failed to request an access token for Salesforce API. The login server responded "{0}"</value>
 	</labels>
 	<labels>
@@ -101,7 +101,7 @@
 		<categories>MdApiClient</categories>
 		<language>en_US</language>
 		<protected>true</protected>
-		<shortDescription>Placeholder label for future code</shortDescription>
+		<shortDescription>Fallback message in case of unknown result code from the authentication server</shortDescription>
 		<value>Failed to request an access token for Salesforce API. The login server responded {0}: {1}</value>
 	</labels>
 	<labels>
@@ -109,7 +109,7 @@
 		<categories>MdApiClient</categories>
 		<language>en_US</language>
 		<protected>true</protected>
-		<shortDescription>Placeholder label for future code</shortDescription>
+		<shortDescription>Fallback message in case of unparseable response from the authentication server</shortDescription>
 		<value>Failed to request an access token for Salesforce API. The login server responded "{0}"</value>
 	</labels>
 	<labels>
@@ -117,7 +117,7 @@
 		<categories>MdApiClient</categories>
 		<language>en_US</language>
 		<protected>true</protected>
-		<shortDescription>Placeholder label for future code</shortDescription>
+		<shortDescription>The scopes returned by the authentication server do not match those required</shortDescription>
 		<value>The Metadata API Client Connected App does not have the required scope: {0}. Add this scope to the Connected App.</value>
 	</labels>
 	<labels>
@@ -125,7 +125,7 @@
 		<categories>MdApiClient</categories>
 		<language>en_US</language>
 		<protected>true</protected>
-		<shortDescription>Placeholder label for future code</shortDescription>
+		<shortDescription>The scopes returned by the authentication server do not match those required</shortDescription>
 		<value>The Metadata API Client Connected App does not have the required scopes: {0}. Add these scopes to the Connected App.</value>
 	</labels>
 </CustomLabels>
