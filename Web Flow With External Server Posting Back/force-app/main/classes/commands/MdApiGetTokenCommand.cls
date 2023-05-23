@@ -68,7 +68,7 @@ public inherited sharing class MdApiGetTokenCommand implements Callable {
 
     private WebFlowClient__mdt getMetadata() {
         final String name = 'API';
-        WebFlowClient__mdt[] clientInfos = [SELECT DeveloperName, Scopes__c, Callback__c, ClientId__c, ClientSecret__c FROM WebFlowClient__mdt WHERE DeveloperName = :name]; //NOPMD
+        WebFlowClient__mdt[] clientInfos = [SELECT DeveloperName, Scopes__c, Callback__c, ClientId__c, ClientSecret__c, PublicServerRoot__c FROM WebFlowClient__mdt WHERE DeveloperName = :name]; //NOPMD
         if(clientInfos.size() != 1) {
             throw AuthDemoApplicationException.builder(AuthDemoApplicationException.MDAPI_CLIENT_ERROR_CODE_MISCONFIGURED, Label.MdApiClientMissingMetadata)
             .withFormatArg(name)
@@ -152,12 +152,11 @@ public inherited sharing class MdApiGetTokenCommand implements Callable {
     }
 
     private String getInitUrl(WebFlowClient__mdt metadata) {
-        PageReference pr = new PageReference('/services/oauth2/authorize');
-        pr.getParameters().put('client_id', metadata.ClientId__c);
-        pr.getParameters().put('redirect_uri', metadata.Callback__c);
-        pr.getParameters().put('response_type', 'code');
+        PageReference pr = new PageReference('/start');
         List<String> scopes = metadata.Scopes__c.split('\\s+');
-        if(allowRefreshTokens) scopes.add('refresh_token');
+        if(allowRefreshTokens) {
+            scopes.add('refresh_token');
+        }
         pr.getParameters().put('scope', String.join(scopes, ' '));
         pr.getParameters()
             .put(
@@ -176,7 +175,7 @@ public inherited sharing class MdApiGetTokenCommand implements Callable {
                     }
                 )
             );
-        return URL.getOrgDomainUrl().toExternalForm() + pr.getURL();
+        return metadata.PublicServerRoot__c + pr.getURL();
     }
 
     /**

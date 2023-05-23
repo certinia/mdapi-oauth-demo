@@ -5,6 +5,7 @@ import express from 'express';
 import { exit } from 'process';
 import { OAuthClient } from './oAuth';
 import { newWebFlowRoute } from './webFlowRoute';
+import { newStartRoute } from './startRoute';
 
 const KEY = process.env.OAUTH_KEY;
 const SECRET = process.env.OAUTH_SECRET;
@@ -25,11 +26,9 @@ const oAuth: OAuthClient = new OAuthClient({
 });
 
 const app = express();
+app.use('/start', newStartRoute(oAuth));
 app.use('/callback', newWebFlowRoute(oAuth));
 
-// Bind to localhost to prevent connections from outside the developer's environment.
-// DO NOT CHANGE THIS UNTIL YOU HAVE FULLY UNDERSTOOD THE CODE AND FIXED ITS FLAWS.
-// You may at least wish to hard code your app's namespace and implement more appropriate logging.
 const port: number = parseInt(PORT!);
 console.log(`Starting DEMONSTRATION OAuth Web Flow server on localhost:${port}`);
-app.listen(port, 'localhost');
+app.listen(port);
