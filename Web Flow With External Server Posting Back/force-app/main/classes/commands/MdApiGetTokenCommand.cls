@@ -3,25 +3,17 @@
  */
 
 /**
- * Attempt to get a Connected App Access Token.
- * This command selects one of two strategies depending on configuration.
- * It will attempt to use an admin provided connected app for JWT Bearer Token if a certificate and clientId are available.
- * It will attempt to use web flow if a client ID and redirect URL are available.
+ * Attempt to get a Connected App Access Token using Web Flow.
+ * If the system already has an Access Token then it will be returned.
+ * If the system allows Refresh Tokens and has a valid Refresh Token then it is used.
+ * Failing this an exception is thrown requesting redirect to the web flow.
  *
  * Argument: Map containing
- *  To test a connection from the UI
- *    clientId: String - client consumer key
- *    certificateName: String - certificate name to use.
  *
  *  Optional
  *    scopes: List<String> - Required scopes as defined by Salesforce OAuth, for example 'api','wave'.
  *    returnScopes: Boolean - if true then the result is a Map<String,Object> containing
  *           accessToken and scopes. Otherwise the response is a String containing the access token.
- * 
- * Testing Admin Provided JWT Apps
- *     This class can redirect to the JWTAdminProvidedAppTokenStrategy to test a connection.
- *     This allows the validate scopes method in this class to be included in that test.
- *     Provide the clientId and certificateName arguments in the argument map.
  */
 public inherited sharing class MdApiGetTokenCommand implements Callable {
     private static final String TOKEN_REFRESH_ENDPOINT_PATH = 'services/oauth2/token';
@@ -38,7 +30,7 @@ public inherited sharing class MdApiGetTokenCommand implements Callable {
 
         initialise();
 
-        Map<String, Object> result = getAccessToken(arguments);
+        Map<String, Object> result = getAccessToken();
 
         List<String> requiredScopes = (List<String>) arguments.get('scopes');
         if(requiredScopes != null) {
@@ -56,7 +48,7 @@ public inherited sharing class MdApiGetTokenCommand implements Callable {
         allowRefreshTokens = settings.AllowRefreshTokens__c;
     }
 
-    public Map<String,Object> getAccessToken(Map<String,Object> args) {
+    public Map<String,Object> getAccessToken() {
         WebFlowClient__mdt metadata = getMetadata();
 
         TokenStoreService.Dto token = TokenStoreService.getToken();
