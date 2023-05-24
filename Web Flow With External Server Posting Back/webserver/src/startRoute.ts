@@ -20,10 +20,11 @@ export function newStartRoute(oAuth: OAuthClient) : Router {
         try {
             const { state, scope } = req.query;
             const { type, app } = parseState(state);
+            const initUrl = oAuth.getInitUrl(type, scope, state);
 
-            console.log(`Start request from app ${app ?? '<no namespace>'} of type ${type}`);
+            console.log(`Start request from app ${app ?? '<no namespace>'} of type ${type} ==> ${initUrl}`);
  
-            res.redirect(oAuth.getInitUrl(type, scope, state));
+            res.redirect(initUrl);
         } catch (e) {
             console.error(e);
             res.type('html');

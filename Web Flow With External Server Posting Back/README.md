@@ -11,6 +11,22 @@ The code consists of an Apex application and sample Lightning page. The sample u
 
 _DISCLAIMER_ This code is provided as a sample only. We do not recommend you use this code in any production system, it is provided for demonstration purposes only.
 
+## Branch Notes - Removing client information from Apex code
+
+This branch explores techniques to remove knowledge of OAuth Client IDs and Secrets from Apex.
+This allows these values to be rotated more easily.
+
+The first and most simple change is to send the initial request to the web server which redirects to the
+init URL. This is adequate if you are not using Refresh Tokens.
+
+The second change is to ask the web server to refresh on our behalf. The initial system accepts the refresh
+token and performs the flow again. The result is PUT to Apex as in the initial flow. This prevents a token
+being available by GET request so strengthens the system. It also results in the need for a new execution
+context to use the token. The sample handles this by retrying from the LWC client.
+
+A planned future change is to strengthen the refresh endpoint, either by requiring authentication to use it
+or using a surrogate for the refresh token. The surrogate is validated before the call to Salesforce.
+
 ## Context
 
 Applications have traditionally used the Apex method UserInfo.getSessionId() when calling into Salesforce's Metadata API for metadata operations to authenticate. A change to the Salesforce security review process has required that a ConnectedApp is used in some circumstances, see [salesforce.stackexchange.com](https://salesforce.stackexchange.com/questions/389121/call-salesforce-api-from-apex-and-not-fail-security-review) and [Partner Forum](https://partners.salesforce.com/0D54V00006EGIJz) for further details.

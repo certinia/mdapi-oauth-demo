@@ -8,18 +8,8 @@
     "replacements": [
         {
             "filename": "force-app/main/customMetadata/WebFlowClient.API.md-meta.xml",
-            "stringToReplace": "__OAUTH_KEY__",
-            "replaceWithEnv": "OAUTH_KEY"
-        },
-        {
-            "filename": "force-app/main/customMetadata/WebFlowClient.API.md-meta.xml",
-            "stringToReplace": "__OAUTH_CALLBACK__",
-            "replaceWithEnv": "OAUTH_CALLBACK"
-        },
-        {
-            "filename": "force-app/main/customMetadata/WebFlowClient.API.md-meta.xml",
-            "stringToReplace": "__OAUTH_SECRET__",
-            "replaceWithEnv": "OAUTH_SECRET"
+            "stringToReplace": "__OAUTH_SERVER_ROOT__",
+            "replaceWithEnv": "OAUTH_SERVER_ROOT"
         },
         {
             "filename": "force-app/main/connectedApps/Web_Flow_Demo.connectedApp-meta.xml",

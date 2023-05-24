@@ -3,16 +3,8 @@
     <label>API</label>
     <protected>true</protected>
     <values>
-        <field>Callback__c</field>
-        <value xsi:type="xsd:string">__OAUTH_CALLBACK__</value>
-    </values>
-    <values>
-        <field>ClientId__c</field>
-        <value xsi:type="xsd:string">__OAUTH_KEY__</value>
-    </values>
-    <values>
-        <field>ClientSecret__c</field>
-        <value xsi:type="xsd:string">__OAUTH_SECRET__</value>
+        <field>PublicServerRoot__c</field>
+        <value xsi:type="xsd:string">__OAUTH_SERVER_ROOT__</value>
     </values>
     <values>
         <field>Scopes__c</field>

@@ -6,6 +6,7 @@ import { exit } from 'process';
 import { OAuthClient } from './oAuth';
 import { newWebFlowRoute } from './webFlowRoute';
 import { newStartRoute } from './startRoute';
+import { newRefreshRoute } from './refreshRoute';
 
 const KEY = process.env.OAUTH_KEY;
 const SECRET = process.env.OAUTH_SECRET;
@@ -28,6 +29,7 @@ const oAuth: OAuthClient = new OAuthClient({
 const app = express();
 app.use('/start', newStartRoute(oAuth));
 app.use('/callback', newWebFlowRoute(oAuth));
+app.use('/refresh', newRefreshRoute(oAuth));
 
 const port: number = parseInt(PORT!);
 console.log(`Starting DEMONSTRATION OAuth Web Flow server on localhost:${port}`);
