@@ -15,10 +15,20 @@ export OAUTH_SECRET='-- Insert Your OAuth Consumer Secret Into The Substitutions
 export OAUTH_DEV_SERVER_PORT=3000
 
 # Address as available on the public internet.
-export OAUTH_PUBLIC_SERVER_HOST='This is the host reported by ngrok'
+# This is the host reported by ngrok or your own domain if using LestEncrypt
+export OAUTH_PUBLIC_SERVER_HOST='https://www.example.com'
+
+# If you wish to start a HTTPS server using a letsencrypt or similar certificate then provide the path
+# to the directory containing the following files
+#   privkey.pem
+#   cert.pem
+#   chain.pem
+# I use an EdgeRouter and had to enable both port forwarding and Hairpin NAT to make this work.
+# Care is needed with any firewall configuration.
+#export LETSENCRYPT_DOMAIN_PATH='path to the directory containing letsencrypt PEM files'
 
 # Server root configured in Apex for its callouts.
-export OAUTH_SERVER_ROOT=${OAUTH_PUBLIC_SERVER_HOST}/
+export OAUTH_SERVER_ROOT=${OAUTH_PUBLIC_SERVER_HOST}:${OAUTH_DEV_SERVER_PORT}
 
 # Callback configured in the Connected App and used in token requests to Salesforce.
-export OAUTH_CALLBACK=${OAUTH_PUBLIC_SERVER_HOST}/callback
+export OAUTH_CALLBACK=${OAUTH_SERVER_ROOT}/callback
