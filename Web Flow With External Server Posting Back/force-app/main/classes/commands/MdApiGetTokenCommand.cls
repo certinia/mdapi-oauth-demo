@@ -137,9 +137,22 @@ public inherited sharing class MdApiGetTokenCommand implements Callable {
         HttpResponse response = http.send(httpRequest);
         Integer status = response.getStatusCode();
         if (status == 200) {
-            // Ask the client to retry to pick up the new token.
-            throw AuthDemoApplicationException.builder(AuthDemoApplicationException.MDAPI_CLIENT_PLEASE_RETRY,
-                    'Please retry to refresh connection').build();
+            Map<String, Object> result = (Map<String,Object>) JSON.deserializeUntyped(response.getBody());
+            if(result.get('status') == true) {
+                // Ask the client to retry to pick up the new token.
+                throw AuthDemoApplicationException.builder(AuthDemoApplicationException.MDAPI_CLIENT_PLEASE_RETRY,
+                        'Please retry to refresh connection').build();
+            } else if(result.get('error') != null) {
+                throw AuthDemoApplicationException.builder(AuthDemoApplicationException.MDAPI_CLIENT_ERROR_BAD_RESPONSE,
+                    'Unable to request a token refresh: {0}')
+                    .withFormatArg((String)result.get('error'))
+                    .build();
+            } else {
+                System.debug(LoggingLevel.ERROR, response.getBody());
+                throw AuthDemoApplicationException.builder(AuthDemoApplicationException.MDAPI_CLIENT_ERROR_BAD_RESPONSE,
+                    'Unable to request a token refresh: ' + response.getBody())
+                    .build();
+            }
         } else {
             System.debug(LoggingLevel.ERROR, response.getStatus());
             System.debug(LoggingLevel.ERROR, response.getBody());

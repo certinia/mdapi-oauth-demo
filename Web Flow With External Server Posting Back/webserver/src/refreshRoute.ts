@@ -7,7 +7,6 @@ import * as bodyParser from 'body-parser';
 import { OAuthClient, SuccessTokenResult } from './oAuth';
 import { reduceError } from './reduceError';
 import { parseState } from './state';
-import { ERROR_PAGE } from './flowPages';
 import { sendTokenToSalesforceOrg } from './putToken';
 
 /**
@@ -31,10 +30,13 @@ export function newRefreshRoute(oAuth: OAuthClient) : Router {
             await sendTokenToSalesforceOrg(grant.instance_url, app, grant.access_token, token);
             console.log('Flow complete OK');
 
-            res.send('OK');
+            res.send('{"status":true}');
         } catch (e) {
             console.error(e);
-            next(e);
+            res.send(JSON.stringify({
+                status: false,
+                error: reduceError(e)
+            }));
         }
     });
 
