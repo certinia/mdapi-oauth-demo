@@ -139,28 +139,15 @@ public inherited sharing class MdApiGetTokenCommand implements Callable {
         if (status == 200) {
             Map<String, Object> result = (Map<String,Object>) JSON.deserializeUntyped(response.getBody());
             if(result.get('status') == true) {
-                // Ask the client to retry to pick up the new token.
+                // Ask the client to retry the request (without web flow) to pick up the new token.
                 throw AuthDemoApplicationException.builder(AuthDemoApplicationException.MDAPI_CLIENT_PLEASE_RETRY,
                         'Please retry to refresh connection').build();
-            } else if(result.get('error') != null) {
-                throw AuthDemoApplicationException.builder(AuthDemoApplicationException.MDAPI_CLIENT_ERROR_BAD_RESPONSE,
-                    'Unable to request a token refresh: {0}')
-                    .withFormatArg((String)result.get('error'))
-                    .build();
-            } else {
-                System.debug(LoggingLevel.ERROR, response.getBody());
-                throw AuthDemoApplicationException.builder(AuthDemoApplicationException.MDAPI_CLIENT_ERROR_BAD_RESPONSE,
-                    'Unable to request a token refresh: ' + response.getBody())
-                    .build();
             }
-        } else {
-            System.debug(LoggingLevel.ERROR, response.getStatus());
-            System.debug(LoggingLevel.ERROR, response.getBody());
-            // Report failure
-            throw AuthDemoApplicationException.builder(AuthDemoApplicationException.MDAPI_CLIENT_ERROR_BAD_RESPONSE,
-                    'Error calling refresh ' + response.getStatus())
-                    .build();
-        }
+        } 
+        System.debug(LoggingLevel.ERROR, response.getStatus());
+        System.debug(LoggingLevel.ERROR, response.getBody());
+        // Fall back to triggering a web flow
+        return null;
     }
 
     private Map<String,Object> makeTokenResult(String token, List<String> scopes) {
