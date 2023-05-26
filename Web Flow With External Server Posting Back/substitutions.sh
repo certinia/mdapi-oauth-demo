@@ -32,3 +32,8 @@ export OAUTH_SERVER_ROOT=${OAUTH_PUBLIC_SERVER_HOST}:${OAUTH_DEV_SERVER_PORT}
 
 # Callback configured in the Connected App and used in token requests to Salesforce.
 export OAUTH_CALLBACK=${OAUTH_SERVER_ROOT}/callback
+
+# Connection string for REDIS. Enable this in order to perform the experiment with surrogate
+# refresh tokens. REDIS is used to store the mappings between surrogate tokens and the real
+# tokens. 
+#export REDIS_URL=redis://localhost:6379

@@ -3,7 +3,7 @@
  */
 import { ParsedUrlQueryInput } from 'querystring';
 import { jsonDecode, httpsPost } from './httpsPost';
-import { StateArg } from './state';
+import { TokenTransform } from './tokenTransform';
 
 /**
  * Possible outcomes from a token request
@@ -29,6 +29,7 @@ export type OAuthClientConfig = {
     client_id: string;
     client_secret: string;
     redirect_uri: string;
+    refreshTokenTransform: TokenTransform
 };
 
 export type ClientType = 'prod' | 'test';
@@ -69,11 +70,11 @@ export class OAuthClient {
      * @param refresh_token the user's refresh token
      * @returns the grant result
      */
-    requestGrantUsingRefreshToken(type: ClientType, refresh_token: string): Promise<SuccessTokenResult> {
-        return this.getGrant(type, {
+    requestGrantUsingRefreshToken(type: ClientType, client_refresh_token: string): Promise<SuccessTokenResult> { 
+        return this.config.refreshTokenTransform.clientToSf(client_refresh_token).then( (refresh_token) => this.getGrant(type, {
             grant_type: 'refresh_token',
             refresh_token,
-        });
+        }));
     }
 
     private getGrant(type: ClientType, parameters: ParsedUrlQueryInput) : Promise<SuccessTokenResult> {
@@ -87,7 +88,14 @@ export class OAuthClient {
             body
         )
             .then(jsonDecode)
-            .then((grant: OAuthTokenResult) => {
+            .then(async (grant: OAuthTokenResult) => {
+                if ('refresh_token' in grant && grant.refresh_token) {
+                    grant.refresh_token = await this.config.refreshTokenTransform.sfToClient({
+                        userId: grant.id,
+                        token: grant.refresh_token
+                    });
+                }
+
                 if ('access_token' in grant) {
                     console.log(`Received grant for ${grant.id}`);
                     return grant;
