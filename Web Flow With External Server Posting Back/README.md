@@ -1,4 +1,4 @@
-# JWT Web Flow  Sample Code
+# Web Flow Sample Code
 
 This project contains sample code to allow Metadata API calls from Apex using the OAuth Web App Flow. The code is derived from the JWT Bearer Flow example, but JWT support has been removed in favour of Web Flow support. This keeps the code simple by removing the need to switch implementations.
 
@@ -10,22 +10,6 @@ that 10M can soon run out. This sample code does not provide a cleanup mechanism
 The code consists of an Apex application and sample Lightning page. The sample uses the Connected App to perform a trivial Metadata read operation as a demonstration of capability to access the MDAPI.
 
 _DISCLAIMER_ This code is provided as a sample only. We do not recommend you use this code in any production system, it is provided for demonstration purposes only.
-
-## Branch Notes - Removing client information from Apex code
-
-This branch explores techniques to remove knowledge of OAuth Client IDs and Secrets from Apex.
-This allows these values to be rotated more easily.
-
-The first and most simple change is to send the initial request to the web server which redirects to the
-init URL. This is adequate if you are not using Refresh Tokens.
-
-The second change is to ask the web server to refresh on our behalf. The initial system accepts the refresh
-token and performs the flow again. The result is PUT to Apex as in the initial flow. This prevents a token
-being available by GET request so strengthens the system. It also results in the need for a new execution
-context to use the token. The sample handles this by retrying from the LWC client.
-
-A planned future change is to strengthen the refresh endpoint, either by requiring authentication to use it
-or using a surrogate for the refresh token. The surrogate is validated before the call to Salesforce.
 
 ## Context
 
@@ -69,8 +53,8 @@ This is the Web Flow as implemented by the demo. This flow uses a packaged Conne
 The Client Secret is needed to support Refresh Tokens and can be omitted if refresh
 tokens are not needed.
 
-1.  The application opens a new Window on the client browser and directs it to the
-    Salesforce Login Server passing the ID of the Connected App
+1.  Request a token: The application opens a new Window on the client browser and directs it to the
+    demo web server. This immediately redirects to the Salesforce Login Server requesting an OAuth Web Flow.
 2.  Salesforce takes the user through Web Flow Authorisation.
     This may be shortcut if the user has already authorised the Connected App.
 3.  The browser is redirected to the demo web server, passing an Access Code
@@ -81,6 +65,15 @@ tokens are not needed.
     OK message to the original caller
 7.  The client application retries the server call to perform its task
 8.  The apex code uses the stored token to access the Metadata API.
+
+## Refresh Flow
+
+The code has been designed to remove knowledge of the Connect App ID and Secret from the Apex component. This requires the Demo Web Server to perform a Refresh request on
+our behalf. The Apex component makes a callback to the web server passing the Refresh Token. The web server performs a refresh then PUTs the result back to the Salesforce Org as above.
+
+The decision to PUT the result back to the Org makes it impossible to acquire an Access Token by request from the server. The token can only be sent to the Org to which it belongs thanks
+to the Org address in Salesforce's Token Result. The downside of this is that the token needs to be accessed in a new Execution Context. The sample asks the User Interface code to retry its
+request to trigger the new context.
 
 ## Storing runtime secrets
 
