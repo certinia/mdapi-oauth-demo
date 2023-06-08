@@ -19,11 +19,7 @@ export function newStartRoute(oAuth: OAuthClient) : Router {
     router.get('/', async (req: any, res: any): Promise<void> => {
         try {
             const { state, scope } = req.query;
-            const { type, app } = parseState(state);
-            const initUrl = oAuth.getInitUrl(type, scope, state);
-
-            console.log(`Start request from app ${app ?? '<no namespace>'} of type ${type} ==> ${initUrl}`);
- 
+            const initUrl = oAuth.getInitUrl(scope, state);
             res.redirect(initUrl);
         } catch (e) {
             console.error(e);

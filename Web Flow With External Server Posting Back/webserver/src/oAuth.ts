@@ -3,7 +3,7 @@
  */
 import { ParsedUrlQueryInput } from 'querystring';
 import { jsonDecode, httpsPost } from './httpsPost';
-import { StateArg } from './state';
+import { StateArg, parseState } from './state';
 
 /**
  * Possible outcomes from a token request
@@ -38,7 +38,15 @@ export const VALID_CLIENT_TYPES : ClientType[] = ['prod','test'];
 export class OAuthClient {
     constructor(private readonly config: OAuthClientConfig) {}
 
-    getInitUrl(type: ClientType, scopes: string, state: string) : string {
+    /**
+     * 
+     * @param scopes scopes parameter to pass to Salesforce
+     * @param state incoming state parameter for the request.
+     * @returns the Init URL to start web flow
+     */
+    getInitUrl(scopes: string, state: string) : string {
+        const { type } = parseState(state);
+
         const target = new URL(type === 'prod' ? 
         'https://login.salesforce.com/services/oauth2/authorize' :
         'https://test.salesforce.com/services/oauth2/authorize');
