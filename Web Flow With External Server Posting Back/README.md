@@ -134,9 +134,11 @@ sfdx force:source:tracking:clear
 sfdx force:source:push -f
 ```
 
+Some changes, for example changing the Callback URL, require the user to make changes in the UI to force propagation to Salesforce authentication servers.
+
 The `MDAPI_Demo` permission set allows access to the demo page.
 
-## Building the webserver
+## Building and running the webserver
 
 See the documentation in [the webserver directory](webserver/README.md). Pay special attention to the security notes there.
 
