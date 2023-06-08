@@ -3,6 +3,7 @@
  */
 import { ParsedUrlQueryInput } from 'querystring';
 import { jsonDecode, httpsPost } from './httpsPost';
+import { StateArg, parseState } from './state';
 
 /**
  * Possible outcomes from a token request
@@ -36,6 +37,26 @@ export const VALID_CLIENT_TYPES : ClientType[] = ['prod','test'];
 
 export class OAuthClient {
     constructor(private readonly config: OAuthClientConfig) {}
+
+    /**
+     * 
+     * @param scopes scopes parameter to pass to Salesforce
+     * @param state incoming state parameter for the request.
+     * @returns the Init URL to start web flow
+     */
+    getInitUrl(scopes: string, state: string) : string {
+        const { type } = parseState(state);
+
+        const target = new URL(type === 'prod' ? 
+        'https://login.salesforce.com/services/oauth2/authorize' :
+        'https://test.salesforce.com/services/oauth2/authorize');
+        target.searchParams.set('state', state);
+        target.searchParams.set('client_id', this.config.client_id);
+        target.searchParams.set('redirect_uri', this.config.redirect_uri);
+        target.searchParams.set('response_type', 'code');
+        target.searchParams.set('scope', scopes);
+        return target.toString();
+    }
 
     /**
      * Apply for a grant using an authorisation code.

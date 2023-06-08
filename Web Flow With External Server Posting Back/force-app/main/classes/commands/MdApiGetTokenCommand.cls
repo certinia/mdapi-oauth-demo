@@ -21,7 +21,13 @@ public inherited sharing class MdApiGetTokenCommand implements Callable {
     private static final String RESULT_KEY_TOKEN = 'accessToken';
     private static final String RESULT_KEY_SCOPES = 'scopes';
 
+    private static final String SERVER_PATH_CALLBACK = '/callback';
+    private static final String SERVER_PATH_START = '/start';
+    private static final String SERVER_PATH_REFRESH = '/refresh';
+
     private Boolean allowRefreshTokens;
+    private Url publicServerRoot;
+    private String[] scopes;
 
     public Object call(String verb, Map<String, Object> arg) {
         Map<String, Object> arguments = (Map<String, Object>) arg;
@@ -43,11 +49,25 @@ public inherited sharing class MdApiGetTokenCommand implements Callable {
         return result.get('accessToken');
     }
 
+    /**
+     * Read settings into member variables.
+     */
     private void initialise() {
         MDAPIClientSettings__c settings = MdApiSettingsSelector.getSettings();
         allowRefreshTokens = settings.AllowRefreshTokens__c;
+
+        WebFlowClient__mdt metadata = getMetadata();
+        publicServerRoot = new URL(metadata.PublicServerRoot__c);
+        scopes = metadata.Scopes__c.split('\\s+');
+        if(allowRefreshTokens) {
+            scopes.add('refresh_token');
+        }
     }
 
+    /**
+     * Attempt to get an access token. If unable to then throw an exception detailing the error
+     * or requesting appropriate action.
+     */
     public Map<String,Object> getAccessToken() {
         WebFlowClient__mdt metadata = getMetadata();
 
@@ -57,24 +77,13 @@ public inherited sharing class MdApiGetTokenCommand implements Callable {
         }
 
         if (token?.refreshToken != null && allowRefreshTokens) {
-            Map<String, Object> result = refreshToken(token.refreshToken, metadata);
+            Map<String, Object> result = refreshToken(token.refreshToken);
             if(result != null) {
                 return result;
             }
         }
 
-        throw makeWebFlowRequestException(metadata);
-    }
-
-    private WebFlowClient__mdt getMetadata() {
-        final String name = 'API';
-        WebFlowClient__mdt[] clientInfos = [SELECT DeveloperName, Scopes__c, Callback__c, ClientId__c, ClientSecret__c FROM WebFlowClient__mdt WHERE DeveloperName = :name]; //NOPMD
-        if(clientInfos.size() != 1) {
-            throw AuthDemoApplicationException.builder(AuthDemoApplicationException.MDAPI_CLIENT_ERROR_CODE_MISCONFIGURED, Label.MdApiClientMissingMetadata)
-            .withFormatArg(name)
-            .build();
-        } 
-        return clientInfos[0];
+        throw makeWebFlowRequestException();
     }
 
     /**
@@ -106,77 +115,77 @@ public inherited sharing class MdApiGetTokenCommand implements Callable {
         return status == 200;
     }
 
-    private  Map<String, Object> refreshToken(String refreshToken, WebFlowClient__mdt metadata) {
-        String tokenUrl = URL.getOrgDomainUrl().toExternalForm() + '/' + TOKEN_REFRESH_ENDPOINT_PATH;
+    /**
+     * Trigger a refresh.
+     * The result is passed back using a PUT, so will not be available in this execution context.
+     * Throw an exception to request that the client retry.
+     */
+    private  Map<String, Object> refreshToken(String refreshToken) {
+        String target = getServerUrl(SERVER_PATH_REFRESH, NULL);
+        String body = JSON.serialize(new Map<String, String>{
+            'state' => getStateParameter(),
+            'token' => refreshToken
+        });
 
         HttpRequest httpRequest = new HttpRequest();
-        httpRequest.setEndpoint(tokenUrl);
+        httpRequest.setEndpoint(target);
         httpRequest.setMethod('POST');
-        httpRequest.setBody(
-            'grant_type=refresh_token' +
-                '&client_id=' +
-                EncodingUtil.urlEncode(metadata.ClientId__c, 'UTF-8') +
-                '&client_secret=' +
-                EncodingUtil.urlEncode(metadata.ClientSecret__c, 'UTF-8') +
-                '&refresh_token=' +
-                EncodingUtil.urlEncode(refreshToken, 'UTF-8')
-        );
+        httpRequest.setHeader('Content-Type', 'application/json');
+        httpRequest.setBody(body);
 
         Http http = new Http();
         HttpResponse response = http.send(httpRequest);
         Integer status = response.getStatusCode();
         if (status == 200) {
-            Map<String, Object> grant = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
-            // Salesforce will not provide a new refresh token, expecting the old one to be reused until expiry.
-            // See https://help.salesforce.com/s/articleView?id=sf.remoteaccess_oauth_refresh_token_flow.htm&type=5
-            String scope = (String) grant.get('scope');
-            return makeTokenResult((String) grant.get('access_token'), scope.split('\\s'));
-        } else {
-            System.debug(LoggingLevel.ERROR, response.getStatus());
-            System.debug(LoggingLevel.ERROR, response.getBody());
-            return null;
-        }
+            Map<String, Object> result = (Map<String,Object>) JSON.deserializeUntyped(response.getBody());
+            if(result.get('status') == true) {
+                // Ask the client to retry the request (without web flow) to pick up the new token.
+                throw AuthDemoApplicationException.builder(AuthDemoApplicationException.MDAPI_CLIENT_PLEASE_RETRY,
+                        'Please retry to refresh connection').build();
+            }
+        } 
+        System.debug(LoggingLevel.ERROR, response.getStatus());
+        System.debug(LoggingLevel.ERROR, response.getBody());
+        // Fall back to triggering a web flow
+        return null;
     }
 
     private Map<String,Object> makeTokenResult(String token, List<String> scopes) {
         return new Map<String, Object>{ RESULT_KEY_TOKEN => token, RESULT_KEY_SCOPES => scopes };
     }
 
-    private Exception makeWebFlowRequestException(WebFlowClient__mdt metadata) {
-        String initUrl = getInitUrl(metadata);
+    /**
+     * Create an exception to tell the client to perform a web flow request.
+     */
+    private Exception makeWebFlowRequestException() {
+        String startUrl = getServerUrl(SERVER_PATH_START, new Map<String, String>{
+            'scope' => String.join(scopes, ' '),
+            'state' => getStateParameter()
+        });
+
+        String expectedCallbackUrl = getServerUrl(SERVER_PATH_CALLBACK, null);
+
         return AuthDemoApplicationException.builder(
             AuthDemoApplicationException.MDAPI_CLIENT_PLEASE_RETRY,
             'Web Flow login is needed'
-        ).withOAuthWebFlow(initUrl, metadata.Callback__c)
+        ).withOAuthWebFlow(startUrl, expectedCallbackUrl)
         .build();
     }
 
-    private String getInitUrl(WebFlowClient__mdt metadata) {
-        PageReference pr = new PageReference('/services/oauth2/authorize');
-        pr.getParameters().put('client_id', metadata.ClientId__c);
-        pr.getParameters().put('redirect_uri', metadata.Callback__c);
-        pr.getParameters().put('response_type', 'code');
-        List<String> scopes = metadata.Scopes__c.split('\\s+');
-        if(allowRefreshTokens) scopes.add('refresh_token');
-        pr.getParameters().put('scope', String.join(scopes, ' '));
-        pr.getParameters()
-            .put(
-                'state',
-                JSON.serialize(
-                    new Map<String, Object>{
-                        // The mandatory type tells the server whether this is a production or sandbox org.
-                        'type' => AuthDemoApplication.runningInASandbox ? 'test' : 'prod',
-                        // The optional app parameter helps in development when testing with multiple namespaces.
-                        // A production webflow server must whitelist or hardcode this parameter.
-                        // Ideally if this parameter is allowed to vary then further validation will be used.
-                        'app' => AuthDemoApplication.namespace,
-                        // Name was to allow multiple connected apps with different scopes. A lot would need to be
-                        // done to make this possible.
-                        'name' => metadata.DeveloperName
-                    }
-                )
-            );
-        return URL.getOrgDomainUrl().toExternalForm() + pr.getURL();
+    /**
+     * Return the state parameter for calls to the server.
+     */
+    private String getStateParameter() {
+        return JSON.serialize(
+            new Map<String, Object>{
+                // The mandatory type tells the server whether this is a production or sandbox org.
+                'type' => AuthDemoApplication.runningInASandbox ? 'test' : 'prod',
+                // The optional app parameter helps in development when testing with multiple namespaces.
+                // A production webflow server must whitelist or hardcode this parameter.
+                // Ideally if this parameter is allowed to vary then further validation will be used.
+                'app' => AuthDemoApplication.namespace
+            }
+        );
     }
 
     /**
@@ -209,5 +218,33 @@ public inherited sharing class MdApiGetTokenCommand implements Callable {
                 .withFormatArg(String.join(new List<String>(missing), ','))
                 .build();
         }
+    }
+
+    /**
+     * Get the URL for a given endpoint on the public server.
+     */
+    private String getServerUrl(String path, Map<String, String> queryParameters) {
+        PageReference pr = new PageReference(path); //NOPMD
+        if(queryParameters != null) {
+            for (String key : queryParameters.keySet()) {
+                pr.getParameters().put(key, queryParameters.get(key));
+            }
+        }
+        return new URL(publicServerRoot, pr.getUrl()).toExternalForm();
+    }
+
+
+    /**
+     * Read information about the connected app from the protected custom metadata.
+     */
+    private WebFlowClient__mdt getMetadata() {
+        final String name = 'API';
+        WebFlowClient__mdt[] clientInfos = [SELECT DeveloperName, Scopes__c, PublicServerRoot__c FROM WebFlowClient__mdt WHERE DeveloperName = :name]; //NOPMD
+        if(clientInfos.size() != 1) {
+            throw AuthDemoApplicationException.builder(AuthDemoApplicationException.MDAPI_CLIENT_ERROR_CODE_MISCONFIGURED, Label.MdApiClientMissingMetadata)
+            .withFormatArg(name)
+            .build();
+        } 
+        return clientInfos[0];
     }
 }

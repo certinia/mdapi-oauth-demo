@@ -19,6 +19,33 @@ Once NPM modules are installed with `npm i` build using webpack:
 mpx webpack
 ```
 
+## Setup
+
+The OAuth Access Token flow can be used with the web server on localhost. If you wish to use the Web Server based Refresh Token flow then you need a server that is reachable from the public Internet. There are two approaches tested:
+
+### Restricted to localhost
+
+Running on localhost allows the OAuth access flow to be used, but prevents the Refresh Token flow. Set the `OAUTH_PUBLIC_SERVER_HOST` in `substitutions.sh` to `http://localhost`.
+
+### Using ngrok
+
+NGrok provides a HTTPS forwarding service, allowing a developer to reverse proxy from the public Internet to the HTTP server running on their localhost. Multiple levels of account are provided ranging from free (non-commercial) to paid commercial use licenses designed for production systems.
+
+Follow the [instructions provided by ngrok](https://dashboard.ngrok.com/get-started/setup) to start forwarding.
+You will then need to enter the public host name in your `substitutions.sh` and push these changes to Salesforce.
+
+### Hosting at home or on a server
+
+It is possible to run the server as a HTTPS server. This has been tested using certificates from Let's Encrypt. Set the `LETSENCRYPT_DOMAIN_PATH` variable in `substitutions.sh` to the location of the certificate files. For example
+
+```
+export OAUTH_PUBLIC_SERVER_HOST=https://myhomedomain.ddns.net
+export LETSENCRYPT_DOMAIN_PATH='letsencrypt/live/myhomedomain.ddns.net'
+```
+
+This will cause the server to start as a HTTPS server on the specified server port. You will then need to set up firewalling as needed. The server needs to be accessible both to Salesforce and your own browser. This may require special
+configuration if Network Address Translation is in use on a home network.
+
 ## Running
 
 Run using node. You will need the environment variables defined in the `substitutions` script. You may have sourced this script while deploying the SFDX project. Otherwise

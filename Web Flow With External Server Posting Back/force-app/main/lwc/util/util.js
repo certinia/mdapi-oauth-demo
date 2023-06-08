@@ -36,7 +36,7 @@ async function apexCall(fn) {
         }
         // We don't yet have other reasons for retry.
         // We could allow arbitrary retries by recursing into apexCall(), but I'd want some means of preventing
-        // runaway.
+        // preventing runaway.
         return await fn();
       }
       throw payload;

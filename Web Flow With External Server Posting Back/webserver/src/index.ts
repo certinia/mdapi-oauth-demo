@@ -5,11 +5,17 @@ import express from 'express';
 import { exit } from 'process';
 import { OAuthClient } from './oAuth';
 import { newWebFlowRoute } from './webFlowRoute';
+import { newStartRoute } from './startRoute';
+import { newRefreshRoute } from './refreshRoute';
+import fs from 'fs';
+import https from 'https';
+import path from 'path';
 
 const KEY = process.env.OAUTH_KEY;
 const SECRET = process.env.OAUTH_SECRET;
 const CALLBACK_URL = process.env.OAUTH_CALLBACK;
 const PORT = process.env.OAUTH_DEV_SERVER_PORT;
+const LETSENCRYPT_DOMAIN_PATH = process.env.LETSENCRYPT_DOMAIN_PATH;
 
 if (!KEY || !SECRET || !CALLBACK_URL || !PORT) {
     console.error(
@@ -25,11 +31,23 @@ const oAuth: OAuthClient = new OAuthClient({
 });
 
 const app = express();
+app.use('/start', newStartRoute(oAuth));
 app.use('/callback', newWebFlowRoute(oAuth));
+app.use('/refresh', newRefreshRoute(oAuth));
 
-// Bind to localhost to prevent connections from outside the developer's environment.
-// DO NOT CHANGE THIS UNTIL YOU HAVE FULLY UNDERSTOOD THE CODE AND FIXED ITS FLAWS.
-// You may at least wish to hard code your app's namespace and implement more appropriate logging.
 const port: number = parseInt(PORT!);
-console.log(`Starting DEMONSTRATION OAuth Web Flow server on localhost:${port}`);
-app.listen(port, 'localhost');
+
+if(LETSENCRYPT_DOMAIN_PATH) {
+    const credentials = {
+        key: fs.readFileSync(path.join(LETSENCRYPT_DOMAIN_PATH, 'privkey.pem'), 'utf-8'),
+        cert: fs.readFileSync(path.join(LETSENCRYPT_DOMAIN_PATH, 'cert.pem'), 'utf-8'),
+        ca: fs.readFileSync(path.join(LETSENCRYPT_DOMAIN_PATH, 'chain.pem'), 'utf-8')
+    };
+    const server = https.createServer(credentials, app);
+    server.listen(port, () => {
+        console.log(`DEMONSTRATION OAuth Web Flow HTTPS server listening on ${port}`);
+    });
+} else {
+    console.log(`Starting DEMONSTRATION OAuth Web Flow server on ${port}`);
+    app.listen(port);
+}

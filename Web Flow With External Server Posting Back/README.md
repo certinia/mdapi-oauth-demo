@@ -1,4 +1,4 @@
-# JWT Web Flow  Sample Code
+# Web Flow Sample Code
 
 This project contains sample code to allow Metadata API calls from Apex using the OAuth Web App Flow. The code is derived from the JWT Bearer Flow example, but JWT support has been removed in favour of Web Flow support. This keeps the code simple by removing the need to switch implementations.
 
@@ -53,8 +53,8 @@ This is the Web Flow as implemented by the demo. This flow uses a packaged Conne
 The Client Secret is needed to support Refresh Tokens and can be omitted if refresh
 tokens are not needed.
 
-1.  The application opens a new Window on the client browser and directs it to the
-    Salesforce Login Server passing the ID of the Connected App
+1.  Request a token: The application opens a new Window on the client browser and directs it to the
+    demo web server. This immediately redirects to the Salesforce Login Server requesting an OAuth Web Flow.
 2.  Salesforce takes the user through Web Flow Authorisation.
     This may be shortcut if the user has already authorised the Connected App.
 3.  The browser is redirected to the demo web server, passing an Access Code
@@ -65,6 +65,15 @@ tokens are not needed.
     OK message to the original caller
 7.  The client application retries the server call to perform its task
 8.  The apex code uses the stored token to access the Metadata API.
+
+## Refresh Flow
+
+The code has been designed to remove knowledge of the Connect App ID and Secret from the Apex component. This requires the Demo Web Server to perform a Refresh request on
+our behalf. The Apex component makes a callback to the web server passing the Refresh Token. The web server performs a refresh then PUTs the result back to the Salesforce Org as above.
+
+The decision to PUT the result back to the Org makes it impossible to acquire an Access Token by request from the server. The token can only be sent to the Org to which it belongs thanks
+to the Org address in Salesforce's Token Result. The downside of this is that the token needs to be accessed in a new Execution Context. The sample asks the User Interface code to retry its
+request to trigger the new context.
 
 ## Storing runtime secrets
 
@@ -118,9 +127,11 @@ sfdx force:source:tracking:clear
 sfdx force:source:push -f
 ```
 
+Some changes, for example changing the Callback URL, require the user to make changes in the UI to force propagation to Salesforce authentication servers.
+
 The `MDAPI_Demo` permission set allows access to the demo page.
 
-## Building the webserver
+## Building and running the webserver
 
 See the documentation in [the webserver directory](webserver/README.md). Pay special attention to the security notes there.
 
