@@ -121,7 +121,7 @@ public inherited sharing class MdApiGetTokenCommand implements Callable {
      * Throw an exception to request that the client retry.
      */
     private  Map<String, Object> refreshToken(String refreshToken) {
-        String target = getServerUrl(SERVER_PATH_REFRESH, NULL);
+        String target = 'callout:WebFlowDemo' + SERVER_PATH_REFRESH;
         String body = JSON.serialize(new Map<String, String>{
             'state' => getStateParameter(),
             'token' => refreshToken
