@@ -49,9 +49,9 @@ the refresh token is disabled.
 
 ![Bearer Flow Components](doc/WebFlow.png)
 
-This is the Web Flow as implemented by the demo. This flow uses a packaged Connected App. Protected Custom Metadata is used to store its client key and web address.
-The Client Secret is needed to support Refresh Tokens and can be omitted if refresh
-tokens are not needed.
+This is the Web Flow as implemented by the demo. This flow uses a packaged Connected App. Protected Custom Metadata is used to store its start URL and callback URL, the latter so that the LWC code can implement security for HTML5 Messaging.
+
+![Bearer Flow Sequence Diagram](<doc/Web Flow Sequence.png>)
 
 1.  Request a token: The application opens a new Window on the client browser and directs it to the
     demo web server. This immediately redirects to the Salesforce Login Server requesting an OAuth Web Flow.
@@ -74,6 +74,8 @@ our behalf. The Apex component makes a callback to the web server passing the Re
 The decision to PUT the result back to the Org makes it impossible to acquire an Access Token by request from the server. The token can only be sent to the Org to which it belongs thanks
 to the Org address in Salesforce's Token Result. The downside of this is that the token needs to be accessed in a new Execution Context. The sample asks the User Interface code to retry its
 request to trigger the new context.
+
+![Refresh Flow Sequence Diagram](<doc/Refresh Sequence.png>)
 
 ## Storing runtime secrets
 

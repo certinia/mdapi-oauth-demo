@@ -1,0 +1,26 @@
+participant LWC as "LWC Client"
+'participant Popup as "Popup Window"
+participant Apex as "Apex Controller"
+participant WebFlow as "WebFlow Server"
+participant Salesforce as "Salesforce Auth"
+participant ApexREST as "Apex REST Endpoint"
+participant MDAPI as "MDAPI Endpoint"
+
+activate LWC
+LWC -> Apex : Request action
+activate Apex
+Apex -> Apex : Do I have a token? (I have Refresh only)
+Apex -> WebFlow : /refresh with token
+activate WebFlow
+WebFlow -> Salesforce : Get token using refresh flow
+WebFlow -> ApexREST : PUT Token
+WebFlow --> Apex : return OK
+deactivate WebFlow
+Apex --> LWC : Please Retry
+deactivate Apex
+
+LWC -> Apex : Request action
+activate Apex
+Apex -> Apex : Do I have a token? (Yes)
+Apex -> MDAPI : Perform work
+
