@@ -1,0 +1,38 @@
+participant LWC as "LWC Client"
+participant Popup as "Popup Window"
+participant Apex as "Apex Controller"
+participant WebFlow as "WebFlow Server"
+participant Salesforce as "Salesforce Auth"
+participant ApexREST as "Apex REST Endpoint"
+participant MDAPI as "MDAPI Endpoint"
+
+activate LWC
+LWC -> Apex : Request action
+activate Apex
+Apex -> Apex : Do I have a token?
+Apex --> LWC : Please Web Flow
+deactivate Apex
+
+LWC -> Popup : Open new window
+activate Popup
+Popup -> WebFlow : GET /start
+activate WebFlow
+WebFlow --> Popup : REDIRECT to salesforce OAuth
+deactivate WebFlow
+Popup -> Salesforce : OAuth Flow, resulting in....
+activate Salesforce
+Salesforce --> Popup : REDIRECT to callback with TOKEN
+deactivate Salesforce
+Popup -> WebFlow : GET /callback with TOKEN
+activate WebFlow
+WebFlow -> Salesforce : Get Access Token
+WebFlow -> ApexREST : PUT Token(s)
+WebFlow --> Popup : Success Page
+deactivate WebFlow
+Popup -> LWC : postMessage SUCCESS
+deactivate Popup
+
+LWC -> Apex : Request action
+activate Apex
+Apex -> Apex : Do I have a token?
+Apex -> MDAPI : Perform work

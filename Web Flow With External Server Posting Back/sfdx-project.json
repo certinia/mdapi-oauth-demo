@@ -12,6 +12,11 @@
             "replaceWithEnv": "OAUTH_SERVER_ROOT"
         },
         {
+            "filename": "force-app/main/main/default/namedCredentials/WebFlowDemo.namedCredential-meta.xml",
+            "stringToReplace": "__OAUTH_SERVER_ROOT__",
+            "replaceWithEnv": "OAUTH_SERVER_ROOT"
+        },
+        {
             "filename": "force-app/main/connectedApps/Web_Flow_Demo.connectedApp-meta.xml",
             "stringToReplace": "__OAUTH_CALLBACK__",
             "replaceWithEnv": "OAUTH_CALLBACK"
